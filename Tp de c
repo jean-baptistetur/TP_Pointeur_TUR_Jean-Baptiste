@@ -1,32 +1,22 @@
 #include <stdio.h>
 
-void min_max(int tab[], int size, int* min, int* max)
-{
-    if (size < 1)
-    {
-        return;
-    }
-    *min = tab[0];
-    *max = tab[0];
-    for (int i = 0; i < size; i++)
-    {
-        if (*min > tab[i])
-        {
-            *min = tab[i];
-        }
-        if (*max < tab[i])
-        {
-            *max = tab[i];
-        }
-    }
-}
+typedef struct {
+    const char* option;
+} Menu;
 
-int main()
-{
-    int min = 0;
-    int max = 0;
-    int tableau[100] = { 12, 2, 8, -7, 15, 2 };
-    min_max(tableau, 6, &min, &max);
-    printf("min = %d et max = %d\n", min, max); 
+typedef struct {
+    const char* nom;
+    Menu* menus;
+    int nb_menus;
+} Application;
+
+int main() {
+    Menu testMenu = { "Option de test" };
+    Menu menus[] = { testMenu };
+    Application testApp = { "Application de test", menus, 1 };
+
+    printf("Nom de l'application : %s\n", testApp.nom);
+    printf("Option du menu : %s\n", testApp.menus[0].option);
+
     return 0;
 }
