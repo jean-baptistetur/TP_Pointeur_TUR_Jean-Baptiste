@@ -1,46 +1,79 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef struct {
-    const char* name;
+    char* name;
+    void (*execute)();
 } Menu;
 
 typedef struct {
-    const char* title;
+    char* appName;
     Menu* menus;
     int menuCount;
 } Application;
 
-void displayMenu(const Application* app) {
-    printf("--- %s ---\n", app->title);
-    for (int i = 0; i < app->menuCount; ++i) {
-        printf("%d. %s\n", i + 1, app->menus[i].name);
-    }
-    printf("Choisissez une option (0 pour quitter) : ");
+void lireMessage() {
+    printf("Lire un message\n");
 }
 
-void runApplication(const Application* app) {
-    int choice;
+void envoyerMessage() {
+    printf("Envoyer un message\n");
+}
+
+void voirPhotos() {
+    printf("Voir les photos\n");
+}
+
+void executerTelephone(Application* app1, Application* app2) {
+    int choix;
     do {
-        displayMenu(app);
-        scanf_s("%d", &choice);
-        if (choice > 0 && choice <= app->menuCount) {
-            printf("Vous avez selectionne : %s\n\n\n", app->menus[choice - 1].name);
+        printf("--- Applications ---\n");
+        printf("1. %s\n", app1->appName);
+        printf("2. %s\n", app2->appName);
+        printf("0. Quitter\n");
+        printf("Votre choix: ");
+        scanf_s("%d", &choix);
+
+        switch (choix) {
+        case 1:
+            for (int i = 0; i < app1->menuCount; i++) {
+                printf("%d. %s\n", i + 1, app1->menus[i].name);
+            }
+            printf("Choisissez une option: ");
+            int app1Choix;
+            scanf_s("%d", &app1Choix);
+            if (app1Choix > 0 && app1Choix <= app1->menuCount) {
+                app1->menus[app1Choix - 1].execute();
+            }
+            break;
+        case 2:
+            for (int i = 0; i < app2->menuCount; i++) {
+                printf("%d. %s\n", i + 1, app2->menus[i].name);
+            }
+            printf("Choisissez une option: ");
+            int app2Choix;
+            scanf_s("%d", &app2Choix);
+            if (app2Choix > 0 && app2Choix <= app2->menuCount) {
+                app2->menus[app2Choix - 1].execute();
+            }
+            break;
+        case 0:
+            printf("Au revoir\n\n\n");
+            break;
+        default:
+            printf("Choix invalide.\n\n\n");
+            break;
         }
-        else if (choice != 0) {
-            printf("Option invalide.\n\n\n");
-        }
-    } while (choice != 0);
+    } while (choix != 0);
 }
 
 int main() {
-    Menu photoMenus[] = {
-        {"Regarder une photo"},
-        {"Prendre une photo"}
-    };
+    Menu photoMenus[] = { {"Voir les photos", voirPhotos} };
+    Application photoApp = { "Photos", photoMenus, 1 };
 
-    Application photoApp = { "Photos", photoMenus, 2 };
+    Menu messageMenus[] = { {"Lire un message", lireMessage}, {"Envoyer un message", envoyerMessage} };
+    Application messageApp = { "Messages", messageMenus, 2 };
 
-    runApplication(&photoApp);
-
+    executerTelephone(&photoApp, &messageApp);
     return 0;
 }
